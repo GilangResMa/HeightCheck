@@ -21,7 +21,7 @@ include 'config/db.php';
     <div class="menu">
       <a href="cek_tinggi.php" class="btn">🧍‍♂️ Cek Tinggi Badan</a>
       <a href="tabel.php" class="btn">📋 Lihat Data</a>
-      <a href="statistik.php" class="btn"> coba lagi Lihat Statistik</a>
+      <a href="statistik.php" class="btn"> testing Lihat Statistik</a>
     </div>
   </div>
 
