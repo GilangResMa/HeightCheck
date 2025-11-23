@@ -1,50 +1,55 @@
 body {
-    font-family: 'Poppins', sans-serif;
-    background: #f6f7fb;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .container {
-    text-align: center;
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    width: 400px;
-  }
-  
-  h1 {
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .desc {
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .menu {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .btn {
-    background: #4a90e2;
-    color: white;
-    padding: 12px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: 0.3s;
-  }
-  
-  .btn:hover {
-    background: #357abd;
-  }
-  
+  font-family: "Poppins", sans-serif;
+  background: #f6f7fb;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.desc {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.btn {
+  background: #4a90e2;
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #357abd;
+}
+
+.logo {
+  width: 50px;
+  display: block;
+  margin: 0 auto 20px auto;
+}

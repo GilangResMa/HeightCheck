@@ -15,6 +15,8 @@ include 'config/db.php';
 <body>
 
   <div class="container">
+  <img src="assets/Logo-iot-2.svg" alt="HeightCheck Logo" class="logo">
+
     <h1>👋 Selamat Datang di HeightCheck</h1>
     <p class="desc">Aplikasi sederhana untuk mengukur dan memantau tinggi badanmu.</p>
 
