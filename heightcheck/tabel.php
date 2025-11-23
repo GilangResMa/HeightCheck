@@ -9,6 +9,8 @@
 </head>
 <body>
 
+  <img src="assets/logo.svg" alt="Logo" style="position: fixed; top: 30px; left: 40px; width: 70px; z-index: 9999; cursor: pointer;">
+
   <div class="container" style="max-width: 900px;">
     <h1>Tabel Hasil</h1>
     

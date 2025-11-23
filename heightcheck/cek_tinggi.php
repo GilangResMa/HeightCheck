@@ -2,21 +2,16 @@
 include 'config/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil data dari form
+    // ... (kode PHP bagian atas tetap sama, tidak perlu diubah) ...
     $nama = $_POST['nama'];
     $umur = $_POST['umur'];
     $jk   = $_POST['jenis_kelamin'];
     $tinggi = $_POST['tinggi']; 
 
-    // 1. Simpan data ke tabel 'users'
     $query_user = "INSERT INTO users (nama, umur, jenis_kelamin) VALUES ('$nama', '$umur', '$jk')";
     
     if (mysqli_query($conn, $query_user)) {
-        // 2. Ambil ID user yang baru saja di-insert
         $id_user_baru = mysqli_insert_id($conn);
-        
-        // 3. Simpan data ke tabel 'data_ukur' menggunakan ID baru
-        // (Saya asumsikan nama kolom tanggalmu adalah 'tanggal_input')
         $query_ukur = "INSERT INTO data_ukur (tinggi, id, tanggal_input) VALUES ('$tinggi', '$id_user_baru', NOW())";
         
         if (mysqli_query($conn, $query_ukur)) {
@@ -41,11 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-  <div class="container">
-    <h3>Cek Tinggi</h3>
+  <img src="assets/logo.svg" alt="Logo" style="position: fixed; top: 30px; left: 40px; width: 70px; z-index: 9999; cursor: pointer;">
 
-    <form method="POST" action="">
+  <div class="container"> 
+  <form method="POST" action="">
       <div class="form-group">
+        <h1>Height Check</h1><br>
         <input type="text" name="nama" placeholder="Nama" required>
         <input type="number" name="umur" placeholder="Umur" required>
         <select name="jenis_kelamin" required>
@@ -62,12 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <p>....................................</p>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
           <a href="index.php" class="btn btn-black">Kembali</a>
-          <button type="submit" class="btn btn-green" style="width: auto; padding: 12px 40px;">Simpan</button>
+          <a href="simpan.php" class="btn btn-black">Simpan</a>
       </div>
     </form>
-  </div>
+    </div>
 
 </body>
 </html>

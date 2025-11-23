@@ -53,3 +53,58 @@ h1 {
   display: block;
   margin: 0 auto 20px auto;
 }
+
+
+/* --- Styling Tambahan untuk Logo di Halaman Internal --- */
+
+/* Aturan untuk container header (menggunakan Flexbox) */
+.header-logo-navbar {
+  display: flex; /* Aktifkan mode Flexbox */
+  align-items: center; /* Pusatkan item secara vertikal */
+  justify-content: flex-start; /* Posisikan logo di sebelah kiri */
+  width: 100%;
+  margin-bottom: 30px; /* Jarak antara header dan konten form */
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee; /* Opsional: Tambahkan garis pemisah */
+  text-align: left; /* Mengatur ulang agar logo dan teks rata kiri */
+  gap: 15px; /* Jarak antara logo dan judul */
+}
+
+/* Ukuran khusus untuk logo di navbar */
+.logo-mini {
+  width: 30px; 
+  height: 30px;
+  margin: 0; /* Menghapus margin otomatis yang mungkin diwarisi */
+}
+
+/* Mengatur ulang margin judul h3 agar sejajar dengan logo */
+.header-logo-navbar h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.btn {
+  display: inline-block;       /* Agar padding bekerja sempurna */
+  background-color: #4a90e2;   /* Warna biru */
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;          /* Kelengkungan sudut */
+  transition: 0.3s;
+  
+  /* PENTING: Penyeragaman Ukuran */
+  padding: 12px 40px;          /* Samakan padding kedua tombol */
+  font-size: 1rem;             /* Pastikan ukuran font sama */
+  text-align: center;
+  min-width: 120px;            /* Opsional: agar lebar tombol minimal sama */
+  box-sizing: border-box;
+
+  /* KHUSUS FIX BUTTON SIMPAN: */
+  border: none;                /* MENGHILANGKAN GARIS TEPI ABU-ABU */
+  cursor: pointer;             /* Mengubah kursor jadi tangan */
+  font-family: inherit;        /* Mengikuti font website (bukan font default tombol) */
+  line-height: normal;         /* Menjaga tinggi baris agar teks di tengah */
+}
+
+.btn:hover {
+  background-color: #357abd;   /* Efek saat disentuh kursor */
+}
