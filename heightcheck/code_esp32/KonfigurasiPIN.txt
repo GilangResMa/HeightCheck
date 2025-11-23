@@ -1,0 +1,11 @@
+//Konfigurasi Ultrasonik
+const int trigPin = 5;   // Pin Trigger
+const int echoPin = 18;  // Pin Echo
+
+//Konfigurasi LED
+const int ledM = 25;
+const int ledK = 26;
+const int ledH = 27;
+
+//Konfigurasi Button
+const int butt = 4;
