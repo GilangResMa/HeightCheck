@@ -28,13 +28,6 @@ include 'config/db.php';
       <a href="statistik.php" class="btn">Lihat Statistik</a>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 20px;">
-    <h3>Kontrol Jarak Jauh</h3>
-    <button onclick="triggerSensor()" class="btn" style="background-color: #e74c3c;">
-      📡 Ukur Sekarang via Sensor
-    </button>
-    <p id="status-sensor" style="margin-top:10px; color: grey;"></p>
-  </div>
 
   <script>
     function triggerSensor() {

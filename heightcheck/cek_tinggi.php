@@ -1,31 +1,3 @@
-<?php
-include 'config/db.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // ... (kode PHP bagian atas tetap sama, tidak perlu diubah) ...
-    $nama = $_POST['nama'];
-    $umur = $_POST['umur'];
-    $jk   = $_POST['jenis_kelamin'];
-    $tinggi = $_POST['tinggi']; 
-
-    $query_user = "INSERT INTO users (nama, umur, jenis_kelamin) VALUES ('$nama', '$umur', '$jk')";
-    
-    if (mysqli_query($conn, $query_user)) {
-        $id_user_baru = mysqli_insert_id($conn);
-        $query_ukur = "INSERT INTO data_ukur (tinggi, id, tanggal_input) VALUES ('$tinggi', '$id_user_baru', NOW())";
-        
-        if (mysqli_query($conn, $query_ukur)) {
-            echo "<script>alert('Data berhasil disimpan!'); window.location.href='tabel.php';</script>";
-        } else {
-            echo "Error (data_ukur): " . mysqli_error($conn);
-        }
-
-    } else {
-        echo "Error (users): " . mysqli_error($conn);
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -33,37 +5,155 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cek Tinggi - HeightCheck</title>
   <link rel="stylesheet" href="css/style.css"> 
+  <style>
+    /* Tambahan style untuk loading overlay */
+    #loadingOverlay {
+        display: none;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255,255,255,0.9);
+        z-index: 1000;
+        text-align: center;
+        padding-top: 20%;
+    }
+    .spinner {
+        border: 8px solid #f3f3f3; border-top: 8px solid #3498db;
+        border-radius: 50%; width: 60px; height: 60px;
+        animation: spin 2s linear infinite; display: inline-block;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
 
-  <img src="assets/logo.svg" alt="Logo" style="position: fixed; top: 30px; left: 40px; width: 70px; z-index: 9999; cursor: pointer;">
+  <div id="loadingOverlay">
+      <div class="spinner"></div>
+      <h2 id="loadingText">Sedang Menghubungi Sensor...</h2>
+      <p>Mohon berdiri tegak di bawah sensor</p>
+  </div>
+
+  <img src="assets/logo.svg" alt="Logo" style="position: fixed; top: 30px; left: 40px; width: 70px; z-index: 9999; cursor: pointer;" onclick="location.href='index.php'">
 
   <div class="container"> 
-  <form method="POST" action="">
       <div class="form-group">
-        <h1>Height Check</h1><br>
-        <input type="text" name="nama" placeholder="Nama" required>
-        <input type="number" name="umur" placeholder="Umur" required>
-        <select name="jenis_kelamin" required>
+        <h1>Height Check</h1>
+        <p class="desc">Isi data diri Anda sebelum mengukur.</p>
+        
+        <input type="text" id="nama" placeholder="Nama Lengkap" required>
+        <input type="number" id="umur" placeholder="Umur" required>
+        <select id="jenis_kelamin" required>
             <option value="">Pilih Gender</option>
             <option value="Laki-laki">Laki-laki</option>
             <option value="Perempuan">Perempuan</option>
         </select>
       </div>
 
-      <div style="margin: 50px 0;">
-          <p>Masukkan Tinggi (Simulasi Sensor)</p>
-          <span style="font-size: 1.5rem;">CM</span>
-          <p>....................................</p>
+      <div style="margin: 40px 0; text-align: center;">
+          <img src="assets/Logo-iot-2.svg" style="width: 80px; opacity: 0.5;">
+          <p style="margin-top: 10px; color: #666;">Pastikan sensor siap digunakan.</p>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
           <a href="index.php" class="btn btn-black">Kembali</a>
-          <a href="index.php" class="btn btn-black">Cek Tinggi</a>
-          <a href="simpan.php" class="btn btn-black">Simpan</a>
+          
+          <button type="button" onclick="mulaiPengukuran()" class="btn" style="background-color: #e74c3c; width: 100%;">
+             📡 Ukur Sekarang
+          </button>
       </div>
-    </form>
-    </div>
+  </div>
+
+  <script>
+    // IP ESP32 Anda (Sesuaikan!)
+    const espIp = "http://10.14.115.128/ukur"; 
+    
+    // Variabel untuk menyimpan waktu data terakhir
+    let lastDataTime = "";
+
+    // 1. Ambil waktu data terakhir dari server saat halaman dimuat
+    fetch('config/api_latest.php')
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                lastDataTime = data.waktu;
+            }
+        });
+
+    function mulaiPengukuran() {
+        const nama = document.getElementById('nama').value;
+        const umur = document.getElementById('umur').value;
+        const jk   = document.getElementById('jenis_kelamin').value;
+
+        // Validasi Form
+        if(nama === "" || umur === "" || jk === "") {
+            alert("Harap lengkapi Nama, Umur, dan Gender terlebih dahulu!");
+            return;
+        }
+
+        // Tampilkan Loading
+        document.getElementById('loadingOverlay').style.display = "block";
+        document.getElementById('loadingText').innerText = "Mengirim Perintah ke Sensor...";
+
+        // 2. Trigger ESP32
+        fetch(espIp)
+            .then(response => {
+                if(response.ok) {
+                    document.getElementById('loadingText').innerText = "Sensor Sedang Mengukur...";
+                    // Mulai cek database apakah data baru sudah masuk
+                    cekDataMasuk();
+                } else {
+                    throw new Error("Gagal trigger ESP");
+                }
+            })
+            .catch(err => {
+                alert("Gagal koneksi ke ESP32. Pastikan satu jaringan WiFi.");
+                document.getElementById('loadingOverlay').style.display = "none";
+            });
+    }
+
+    // 3. Fungsi Polling (Cek terus menerus apakah ada data baru)
+    function cekDataMasuk() {
+        const interval = setInterval(() => {
+            fetch('config/api_latest.php')
+                .then(res => res.json())
+                .then(data => {
+                    // Jika waktu data di database BEDA dengan waktu awal tadi, berarti data baru sudah masuk!
+                    if(data.status === 'success' && data.waktu !== lastDataTime) {
+                        clearInterval(interval); // Stop checking
+                        document.getElementById('loadingText').innerText = "Menyimpan Data Diri...";
+                        
+                        // 4. Update Nama User ke Data Tersebut
+                        updateUserDatabase();
+                    }
+                });
+        }, 1000); // Cek setiap 1 detik
+    }
+
+    // 5. Fungsi Update Nama User (Karena ESP32 default-nya 'User IoT')
+    function updateUserDatabase() {
+        const nama = document.getElementById('nama').value;
+        const umur = document.getElementById('umur').value;
+        const jk   = document.getElementById('jenis_kelamin').value;
+
+        const formData = new FormData();
+        formData.append('nama', nama);
+        formData.append('umur', umur);
+        formData.append('jenis_kelamin', jk);
+
+        fetch('config/update_user.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if(result.status === 'success') {
+                // 6. Pindah ke Halaman Hasil
+                window.location.href = 'hasil.php';
+            } else {
+                alert("Gagal update user: " + result.message);
+                document.getElementById('loadingOverlay').style.display = "none";
+            }
+        });
+    }
+  </script>
 
 </body>
 </html>
